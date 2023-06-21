@@ -36,18 +36,41 @@ class Speech2TextPluginConfig extends PluginConfig
                 'label' => $__('Note Poster'),
                 'hint' => $__('Name of Note Poster (optional - defaults to "SYSTEM")')
             )),
+            'speech2text-provider' => new ChoiceField(array(
+                'label' => $__('Transcription Provider'),
+                'choices' => array(
+                    'azure' => 'Azure Speech services',
+                    'openai' => 'OpenAI Whisper'
+                )
+            )),
             'speech2text-location' => new TextboxField(array(
                 'label' => $__('Azure Server Location'),
                 'hint' => $__('Location of azure speech resource, e.g. uksouth')
             )),
             'speech2text-apikey' => new TextboxField(array(
-                'label' => $__('API Key'),
+                'label' => $__('Speech service API Key'),
                 'hint' => $__('Available from Azure portal'),
                 'configuration' => array(
                     'size' => 32,
                     'length' => 32
                 )
-            ))
+            )),
+            'speech2text-openaikey' => new TextboxField(array(
+                'label' => $__('OpenAI API Key'),
+                'hint' => $__('Available from OpenAI'),
+                'configuration' => array(
+                    'size' => 52,
+                    'length' => 52
+                )
+            )),
+            'speech2text-prompt' => new TextareaField(array(
+                'label' => $__('Whisper prompt'),
+                'hint' => $__('An optional text to guide the model\'s style'),
+                'configuration' => array(
+                    'html' => true,
+                    'size' => 'small',
+                )
+            )),
         );
     }
 }
