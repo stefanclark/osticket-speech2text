@@ -11,22 +11,14 @@ class Speech2TextPlugin extends Plugin
 {
     public $config_class = "Speech2TextPluginConfig";
 
-    private static $pluginInstance = null;
-
-    private function getPluginInstance(?int $id)
-    {
-        if ($id && ($i = $this->getInstance($id))) {
-            return $i;
-        }
-
-        return $this->getInstances()->first();
-    }
+    private static $instanceConfig = null;
 
     public function bootstrap()
     {
-        self::$pluginInstance = self::getPluginInstance(null);
+        $pluginInstance = new Speech2TextPlugin();
+        $pluginInstance->instanceConfig = $this->getConfig();
 
-        Signal::connect('ticket.created', [$this, 'processAttachments']);
+        Signal::connect('ticket.created', [$pluginInstance, 'processAttachments']);
     }
 
     public function processAttachments($ticket)
@@ -40,7 +32,10 @@ class Speech2TextPlugin extends Plugin
         // This plugin uses the above function as it works across Attachent Storage configurations
         //   including 'in the database' and 'filesystem'
 
-        $config = $this->getConfig(self::$pluginInstance);
+        $config = $this->instanceConfig;
+        if (!($config instanceof PluginConfig)) {
+            return;
+        }
 
         if (!$provider = $config->get('speech2text-provider')) {
             $this->log(__FUNCTION__ . ': Provider not selected', LOG_WARN);
